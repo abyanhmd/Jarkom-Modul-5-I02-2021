@@ -1,5 +1,214 @@
 # Jarkom-Modul-5-I02-2021
 
+# Jarkom-Modul-3-I02-2021
+## Group IUP 2
+- Gede Yoga Arisudana (05111942000009)
+- Abyan Ahmad (05111942000013)
+- Zulfiqar Rahman Aji (05111942000019)
+
+
+### Topology
+![Topology](/Image/Topology.png)
+
+### Subnet
+We used VLSM Subnetting for this case.
+
+![VLSM Subnet](/Image/VLSM_Subnet.png)
+
+![VLSM Tree](/Image/VLSM_Tree.png)
+
+![VLSM IP](/Image/VLSM_IP.jpg)
+
+**FOOSHA**
+```sh
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+hwaddress ether 9a:c7:17:77:74:00
+
+auto eth1
+iface eth1 inet static
+ address 192.209.7.145
+ netmask 255.255.255.252
+
+auto eth2
+iface eth2 inet static
+ address 192.209.7.149
+ netmask 255.255.255.252
+```
+
+**WATER7**
+
+```sh
+auto eth0
+iface eth0 inet static
+ address 192.209.7.146
+ netmask 255.255.255.252
+ gateway 192.209.7.145
+
+auto eth1
+iface eth1 inet static
+ address 192.209.7.129
+ netmask 255.255.255.248
+
+auto eth2
+iface eth2 inet static
+ address 192.209.7.1
+ netmask 255.255.255.128
+
+auto eth3
+iface eth3 inet static
+ address 192.209.0.1
+ netmask 255.255.252.0
+```
+
+**GUANHAO**
+
+```sh
+auto eth0
+iface eth0 inet static
+ address 192.209.7.150
+ netmask 255.255.255.252
+ gateway 192.209.7.149
+
+auto eth1
+iface eth1 inet static
+ address 192.209.4.1
+ netmask 255.255.254.0
+
+auto eth2
+iface eth2 inet static
+ address 192.209.6.1
+ netmask 255.255.255.0
+
+auto eth3
+iface eth3 inet static
+ address 192.209.7.137
+ netmask 255.255.255.248
+```
+
+**Doriki**
+
+```sh
+auto eth0
+iface eth0 inet static
+ address 192.209.7.130
+ netmask 255.255.255.248
+ gateway 192.209.7.129
+```
+
+**Jipangu**
+
+```sh
+auto eth0
+iface eth0 inet static
+        address 192.209.7.131
+        netmask 255.255.255.248
+        gateway 192.209.7.129
+```
+
+**Jorge**
+
+```sh
+auto eth0
+iface eth0 inet static
+ address 192.209.7.138
+ netmask 255.255.255.248
+ gateway 192.209.7.137
+```
+
+**Maingate**
+
+```sh
+auto eth0
+iface eth0 inet static
+ address 192.209.7.139
+ netmask 255.255.255.248
+ gateway 192.209.7.137
+```
+
+**Blueno - Cipher - Elena - Fukurou**
+
+```sh
+auto eth0
+iface eth0 inet dhcp
+```
+
+<br>
+
+### Routing
+**Water7**
+shell
+route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.209.7.145
+
+**Gunahao**
+```shell
+route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.209.7.149
+```
+
+**Foosha**
+```shell
+route add -net 192.209.7.128 netmask 255.255.255.248 gw 192.209.7.146
+route add -net 192.209.7.0 netmask 255.255.255.128 gw 192.209.7.146
+route add -net 192.209.0.0 netmask 255.255.252.0 gw 192.209.7.146
+route add -net 192.209.4.0 netmask 255.255.254.0 gw 192.209.7.150
+route add -net 192.209.6.0 netmask 255.255.255.0 gw 192.209.7.150
+route add -net 192.209.7.136 netmask 255.255.255.248 gw 192.209.7.150
+```
+
+<br>
+
+### DHCP
+
+**Jipangu - DHCP Server**
+```shell
+# /etc/dhcp/dhcpd.conf
+
+subnet 192.209.7.128 netmask 255.255.255.248 {
+ option routers 192.209.7.129;
+}
+subnet 192.209.7.0 netmask 255.255.255.128 {
+    range 192.209.7.2 192.209.7.126;
+    option routers 192.209.7.1;
+    option broadcast-address 192.209.7.127;
+    option domain-name-servers 192.209.7.130;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+subnet 192.209.0.0 netmask 255.255.252.0 {
+    range 192.209.0.2 192.209.3.254;
+    option routers 192.209.0.1;
+    option broadcast-address 192.209.3.255;
+    option domain-name-servers 192.209.7.130;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+subnet 192.209.4.0 netmask 255.255.254.0 {
+    range 192.209.4.2 192.209.5.254;
+    option routers 192.209.4.1;
+    option broadcast-address 192.209.5.255;
+    option domain-name-servers 192.209.7.130;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+subnet 192.209.6.0 netmask 255.255.255.0 {
+    range 192.209.6.2 192.209.6.254;
+    option routers 192.209.6.1;
+    option broadcast-address 192.209.6.255;
+    option domain-name-servers 192.209.7.130;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+```
+
+**Water7 - Foosha - Guanhao - DHCP Relay**
+
+The configuration is only adding Jipangu's IP and each nodes' eth interface in */etc/default/isc-dhcp-relay*.
+
+<br>
+
 ## Problem 4
 Access from Blueno and Cipher subnets to Doriki is only allowed from 07.00 - 15.00 from Monday to Thursday.
 
