@@ -211,24 +211,27 @@ The configuration is only adding Jipangu's IP and each nodes' eth interface in *
 ## Problem 1
 
 Because in Foosha's network interface we have added hardware address, we can have static IP with internet in Foosha.
-sh
+```sh
 # /etc/network/interface in Foosha
 
 auto eth0
 iface eth0 inet dhcp
 hwaddress ether 9a:c7:17:77:74:00
+```
 
 The IP from the hardware address is `192.168.122.15`. Iptables without MASQUERADE can be like this.
 
-shell
+```shell
 iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.122.15
+```
 
 ## Problem 2
 
 Drop every HTTP access through DNS Server and DHCP Server in order to maintain security.
 
-shell
+```shell
 iptables -A FORWARD -d 192.209.7.128/29 -p tcp --dport 80 -j REJECT
+```
 
 ![2 Test](/Image/2_Test.png)
 
@@ -236,10 +239,11 @@ iptables -A FORWARD -d 192.209.7.128/29 -p tcp --dport 80 -j REJECT
 
 Limit DHCP Server and DNS Server in order to only receive maximum of 3 ICMP connection at once using iptables.
 
-shell
+```shell
 # iptables for Water7
 
 iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
+```
 
 ![3 Test](/Image/3_Test.gif)
 
