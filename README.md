@@ -207,6 +207,40 @@ subnet 192.209.6.0 netmask 255.255.255.0 {
 The configuration is only adding Jipangu's IP and each nodes' eth interface in */etc/default/isc-dhcp-relay*.
 
 <br>
+## Problem 1
+
+Because in Foosha's network interface we have added hardware address, we can have static IP with internet in Foosha.
+sh
+# /etc/network/interface in Foosha
+
+auto eth0
+iface eth0 inet dhcp
+hwaddress ether 9a:c7:17:77:74:00
+
+The IP from the hardware address is `192.168.122.15`. Iptables without MASQUERADE can be like this.
+
+shell
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.122.15
+
+## Problem 2
+
+Drop every HTTP access through DNS Server and DHCP Server in order to maintain security.
+
+shell
+iptables -A FORWARD -d 192.209.7.128/29 -p tcp --dport 80 -j REJECT
+
+![2 Test](/Image/2_Test.png)
+
+## Problem 3
+
+Limit DHCP Server and DNS Server in order to only receive maximum of 3 ICMP connection at once using iptables.
+
+shell
+# iptables for Water7
+
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
+
+![3 Test](/Image/3_Test.gif)
 
 ## Problem 4
 Access from Blueno and Cipher subnets to Doriki is only allowed from 07.00 - 15.00 from Monday to Thursday.
