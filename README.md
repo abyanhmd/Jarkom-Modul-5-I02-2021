@@ -207,6 +207,7 @@ subnet 192.209.6.0 netmask 255.255.255.0 {
 The configuration is only adding Jipangu's IP and each nodes' eth interface in */etc/default/isc-dhcp-relay*.
 
 <br>
+
 ## Problem 1
 
 Because in Foosha's network interface we have added hardware address, we can have static IP with internet in Foosha.
